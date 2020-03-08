@@ -2,8 +2,11 @@ package com.pixelhubllc.database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.pixelhubllc.dictionary.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +71,31 @@ public class DatabaseAccess {
         }
         cursor.close();
         return list;
+    }
+
+    public List<Model> fetchdatabyfilter(String inputText) throws SQLException {
+        List<Model> data= new ArrayList<>();
+        Cursor row = null;
+        if (inputText != null  ||  inputText.length () < 0)  {
+            //query = "SELECT * FROM "+dbTable+" WHERE "+filtercolumn+" like '%"+inputText+"%'";
+            String query = "SELECT _id,en_word FROM words WHERE en_word LIKE '"+inputText+"%'"+"LIMIT 10";
+
+            row = database.rawQuery(query, null);
+            if (row != null) {
+                row.moveToFirst();
+                while(!row.isAfterLast()){
+                    int id=row.getInt(row.getColumnIndex("_id"));
+                    String word=row.getString(row.getColumnIndex("en_word"));
+                    data.add(new Model(id,word));
+                    // do what ever you want here
+                    row.moveToNext();
+                }
+            }
+        }
+        else
+            data=null;
+
+        return data;
     }
 
 

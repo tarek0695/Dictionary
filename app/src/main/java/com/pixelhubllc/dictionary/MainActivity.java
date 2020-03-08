@@ -9,18 +9,20 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.pixelhubllc.database.DatabaseAccess;
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    DatabaseAccess databaseAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        databaseAccess = DatabaseAccess.getInstance(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new SearchFragment())
                 .commit();

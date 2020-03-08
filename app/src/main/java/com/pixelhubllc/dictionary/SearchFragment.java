@@ -1,15 +1,26 @@
 package com.pixelhubllc.dictionary;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +34,11 @@ import java.util.List;
 public class SearchFragment extends Fragment {
 
     DatabaseAccess databaseAccess;
-
     private ListView wordIndexList;
+    private EditText searchViewEt;
+    private static final String TAG = "SearchFragment";
+    List<Model> data;
+
 
     @Nullable
     @Override
@@ -32,13 +46,15 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_search,container, false);
 
-        databaseAccess = DatabaseAccess.getInstance(getActivity());
+        databaseAccess = DatabaseAccess.getInstance(getContext());
 
-        EditText searchView = view.findViewById(R.id.searchboxEt);
+        searchViewEt = view.findViewById(R.id.searchboxEt);
+
+        ImageView clearEt = view.findViewById(R.id.clear_et);
 
         wordIndexList = view.findViewById(R.id.listview);
 
-        searchView.addTextChangedListener(new TextWatcher() {
+        searchViewEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -46,19 +62,13 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                ArrayList<String> userList = new ArrayList<>();
-                databaseAccess.open();
-                List<String> quotes = databaseAccess.getWords();
-                databaseAccess.close();
-                for (String user : quotes){
-                    if (user.toLowerCase().contains((s))){
-                        userList.add(user);
-                    }
+                String word = s.toString();
+                if (!word.isEmpty()){
+                    data = databaseAccess.fetchdatabyfilter(word);
+                    CustomAdapter customAdapter = new CustomAdapter(getActivity(), data);
+                    wordIndexList.setAdapter(customAdapter);
+                    Log.d("TAG",data.toString());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, userList);
-                wordIndexList.setAdapter(adapter);
-
             }
 
             @Override
@@ -67,7 +77,33 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        clearEt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setUserVisibleHint(true);
+                searchViewEt.setText("");
+            }
+        });
+
+
+
         return view;
 
     }
-}
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            try {
+                InputMethodManager mImm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                mImm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+                mImm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                Log.e("TAG", "setUserVisibleHint: ", e);
+            }
+        }
+    }
+
+    }
+
