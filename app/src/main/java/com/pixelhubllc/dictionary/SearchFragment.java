@@ -37,16 +37,22 @@ public class SearchFragment extends Fragment {
     private ListView wordIndexList;
     private EditText searchViewEt;
     private static final String TAG = "SearchFragment";
-    List<Model> data;
+    ArrayList<Model> data, nullvalue;
 
+    Context context;
 
+    public SearchFragment(Context context){
+        this.context = context;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+       // nullvalue = new List
 
         View view = inflater.inflate(R.layout.activity_search,container, false);
 
-        databaseAccess = DatabaseAccess.getInstance(getContext());
+        databaseAccess = DatabaseAccess.getInstance(context);
+        databaseAccess.open();
 
         searchViewEt = view.findViewById(R.id.searchboxEt);
 
@@ -68,6 +74,9 @@ public class SearchFragment extends Fragment {
                     CustomAdapter customAdapter = new CustomAdapter(getActivity(), data);
                     wordIndexList.setAdapter(customAdapter);
                     Log.d("TAG",data.toString());
+                } else {
+                    CustomAdapter customAdapter = new CustomAdapter(getActivity(), new ArrayList<Model>());
+                    wordIndexList.setAdapter(customAdapter);
                 }
             }
 

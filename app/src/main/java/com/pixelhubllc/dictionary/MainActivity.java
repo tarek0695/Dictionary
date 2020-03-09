@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         databaseAccess = DatabaseAccess.getInstance(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new SearchFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new SearchFragment(this))
                 .commit();
 
         BottomNavigationView navigationView = findViewById(R.id.bottom_navigation_bar);
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
                     switch (menuItem.getItemId()) {
                         case R.id.search:
-                            selectedFragment = new SearchFragment();
+                            selectedFragment = new SearchFragment(MainActivity.this);
                             break;
 
                         case R.id.favourite:

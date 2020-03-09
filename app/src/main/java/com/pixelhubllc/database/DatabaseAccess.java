@@ -73,14 +73,14 @@ public class DatabaseAccess {
         return list;
     }
 
-    public List<Model> fetchdatabyfilter(String inputText) throws SQLException {
-        List<Model> data= new ArrayList<>();
-        Cursor row = null;
+    public ArrayList<Model> fetchdatabyfilter(String inputText) throws SQLException {
+        ArrayList<Model> data= new ArrayList<>();
+
         if (inputText != null  ||  inputText.length () < 0)  {
             //query = "SELECT * FROM "+dbTable+" WHERE "+filtercolumn+" like '%"+inputText+"%'";
             String query = "SELECT _id,en_word FROM words WHERE en_word LIKE '"+inputText+"%'"+"LIMIT 10";
 
-            row = database.rawQuery(query, null);
+            Cursor row = database.rawQuery(query, null);
             if (row != null) {
                 row.moveToFirst();
                 while(!row.isAfterLast()){
@@ -90,6 +90,8 @@ public class DatabaseAccess {
                     // do what ever you want here
                     row.moveToNext();
                 }
+
+                row.close();
             }
         }
         else
