@@ -4,23 +4,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.database.SQLException;
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.pixelhubllc.database.DatabaseAccess;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     DatabaseAccess databaseAccess;
+//    Button nightmode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        nightmode = findViewById(R.id.gonight);
+//        nightmode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getApplicationContext().setTheme(MODE_NIGHT_YES);
+//            }
+//        });
 
         databaseAccess = DatabaseAccess.getInstance(this);
 

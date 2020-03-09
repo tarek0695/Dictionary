@@ -61,8 +61,8 @@ public class DatabaseAccess {
      *
      * @return a List of quotes
      */
-    public List<String> getWords() {
-        List<String> list = new ArrayList<>();
+    public ArrayList<String> getWords() {
+        ArrayList<String> list = new ArrayList<>();
         Cursor cursor = database.rawQuery("SELECT en_word FROM words", null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
